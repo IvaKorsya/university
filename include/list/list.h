@@ -13,7 +13,21 @@ class linked_list {
 	node* _head;
 	size_t _size;
 public:
-	linked_list() : _head(new node{0,nullptr,nullptr}), _size(0) {};
+	linked_list() : _head(nullptr), _size(0) {};
+
+	/*linked_list(node* head, size_t size) : _head(head), _size(size) {
+		auto tmp_c = head;
+		auto tmp = _head;
+		size_t cur_ind = 0;
+		while (cur_ind++ < size) {
+			tmp->next = new node(tmp_c->next->value, tmp_c, nullptr);
+			tmp_c = tmp_c->next;
+			tmp = tmp->next;
+		}
+	}*/
+
+	//linked_list(T& value) : _head(new node(value, nullptr, nullptr)), _size(1) {};
+
 	linked_list(size_t size) : _size(size) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -21,13 +35,13 @@ public:
 		std::uniform_int_distribution<> dist(0, 9);
 		_head = new node(dist_for_head(gen), nullptr, nullptr);
 		auto tmp = _head;
-		size_t s = 0;
-		while (s < size) {
+		size_t cur_ind = 1;
+		while (cur_ind++ < size) {
 			tmp->next = new node(dist(gen), tmp, nullptr);
 			tmp = tmp->next;
-			++s;
 		}
 	}
+	
 	const node& operator[](size_t index) const {
 		if (index < 0 || index >= _size) throw std::invalid_argument("index out of the range");
 		size_t cur_ind = 0;
@@ -46,10 +60,37 @@ public:
 		}
 		return *tmp;
 	}
+
+	void add_to_tail(const T& value) {
+		++_size;
+		if (!_head) _head = new node(value, nullptr, nullptr);
+		auto tmp = _head;
+		while (tmp->next) {
+			tmp = tmp-> next;
+		}
+		tmp->next = new node(value, tmp, nullptr);
+	}
+
+	void add_to_tail(const linked_list& list) {
+		_size += list._size;
+		auto tmp = _head;
+		while (tmp->next) {
+			tmp = tmp->next;
+		}
+		auto tmp_l = list._head;
+		while (tmp_l) {
+			tmp->next = new node(tmp_l->value, tmp, nullptr);
+			tmp_l = tmp_l->next;
+			tmp = tmp->next;
+		}
+	}
+
 	friend std::ostream& operator<<(std::ostream& os, const linked_list& list) {
 		os << "{ ";
-		for (size_t i = 0; i < list._size; ++i) {
-			os << list[i].value << " ";
+		auto tmp = list._head;
+		while(tmp){
+			os << tmp->value << " ";
+			tmp = tmp->next;
 		}
 		os << "}";
 		return os;
