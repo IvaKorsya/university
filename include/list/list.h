@@ -15,19 +15,6 @@ class linked_list {
 public:
 	linked_list() : _head(nullptr), _size(0) {};
 
-	/*linked_list(node* head, size_t size) : _head(head), _size(size) {
-		auto tmp_c = head;
-		auto tmp = _head;
-		size_t cur_ind = 0;
-		while (cur_ind++ < size) {
-			tmp->next = new node(tmp_c->next->value, tmp_c, nullptr);
-			tmp_c = tmp_c->next;
-			tmp = tmp->next;
-		}
-	}*/
-
-	//linked_list(T& value) : _head(new node(value, nullptr, nullptr)), _size(1) {};
-
 	linked_list(size_t size) : _size(size) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -42,6 +29,22 @@ public:
 		}
 	}
 	
+	linked_list(const linked_list& list): _head(nullptr){
+		this->add_to_tail(list);
+	}
+
+	linked_list& operator=(const linked_list& list) {
+		auto tmp = _head;
+		_size = 0;
+		while (tmp) {
+			tmp = _head;
+			_head = _head->next;
+			delete tmp;
+		}
+		this->add_to_tail(list);
+		return *this;
+	}
+
 	const node& operator[](size_t index) const {
 		if (index < 0 || index >= _size) throw std::invalid_argument("index out of the range");
 		size_t cur_ind = 0;
@@ -51,6 +54,7 @@ public:
 		}
 		return *tmp;
 	}
+
 	node& operator[](size_t index){
 		if (index < 0 || index >= _size) throw std::invalid_argument("index out of the range");
 		size_t cur_ind = 0;
@@ -59,6 +63,19 @@ public:
 			tmp = tmp->next;
 		}
 		return *tmp;
+	}
+
+	void add_to_head(const T& value) {
+		++_size;
+		auto tmp = _head;
+		_head = new node(value, nullptr, tmp);
+		tmp->prev = _head;
+	}
+	void add_to_head(const linked_list& list) {
+		_size += list._size;
+		auto tmp = _head;
+		auto tmp2 = list._head;
+
 	}
 
 	void add_to_tail(const T& value) {
@@ -70,14 +87,21 @@ public:
 		}
 		tmp->next = new node(value, tmp, nullptr);
 	}
-
+	
 	void add_to_tail(const linked_list& list) {
 		_size += list._size;
-		auto tmp = _head;
-		while (tmp->next) {
-			tmp = tmp->next;
-		}
 		auto tmp_l = list._head;
+		auto tmp = _head;
+		if (!_head) {
+			_head=new node(list._head->value,nullptr,nullptr);
+			tmp = _head;
+			tmp_l = tmp_l->next;
+		}
+		else{
+			while (tmp->next) {
+				tmp = tmp->next;
+			}
+		}
 		while (tmp_l) {
 			tmp->next = new node(tmp_l->value, tmp, nullptr);
 			tmp_l = tmp_l->next;

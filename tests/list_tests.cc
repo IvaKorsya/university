@@ -24,4 +24,22 @@ TEST(list_tests, add_to_tail_list) {
 	list.add_to_tail(list2);
 	ASSERT_EQ(list.get_size(), 12);
 }
+//5
+TEST(list_tests, add_to_head_value) {
+	linked_list<int> list = linked_list<int>(3);
+	list.add_to_head(5);
+	ASSERT_EQ(list.get_size(), 4);
+}
+//6
+TEST(list_tests, copy_constr) {
+	linked_list<int> list = linked_list<int>(3);
+	auto list_copy(list);
+	ASSERT_EQ(list.get_size(), 3);
+}
+//7
+TEST(list_tests, operator_eq) {
+	linked_list<int> list = linked_list<int>(3);
+	auto list_copy=list;
+	ASSERT_EQ(list.get_size(), 3);
+}
 
