@@ -13,9 +13,10 @@ class linked_list {
 	node* _head;
 	size_t _size;
 public:
-	linked_list() : _head(nullptr), _size(0) {};
+	linked_list() : _head(new node(NULL,nullptr,nullptr)), _size(1) {};
 
 	linked_list(size_t size) : _size(size) {
+		if (size <= 0) _size = 1;
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dist_for_head(1, 9);
@@ -29,7 +30,7 @@ public:
 		}
 	}
 	
-	linked_list(const linked_list& list): _head(nullptr){
+	linked_list(const linked_list& list): _head(nullptr),_size(0){
 		this->add_to_tail(list);
 	}
 
@@ -37,9 +38,9 @@ public:
 		auto tmp = _head;
 		_size = 0;
 		while (tmp) {
-			tmp = _head;
 			_head = _head->next;
 			delete tmp;
+			tmp = _head;
 		}
 		this->add_to_tail(list);
 		return *this;
@@ -66,20 +67,22 @@ public:
 	}
 
 	void add_to_head(const T& value) {
+		if (value <= 0 || value>10) throw std::invalid_argument("1 to 9");
 		++_size;
 		auto tmp = _head;
 		_head = new node(value, nullptr, tmp);
 		tmp->prev = _head;
 	}
-	void add_to_head(const linked_list& list) {
-		_size += list._size;
-		auto tmp = _head;
-		auto tmp2 = list._head;
 
+	void add_to_head(const linked_list& list) {
+		auto new_head=list;
+		new_head.add_to_tail(*this);
+		*this=new_head;
 	}
 
 	void add_to_tail(const T& value) {
 		++_size;
+		if (value < 0 || value>10) throw std::invalid_argument("0 to 9");
 		if (!_head) _head = new node(value, nullptr, nullptr);
 		auto tmp = _head;
 		while (tmp->next) {
@@ -98,15 +101,41 @@ public:
 			tmp_l = tmp_l->next;
 		}
 		else{
-			while (tmp->next) {
-				tmp = tmp->next;
-			}
+			tmp = this->get_tail();
 		}
 		while (tmp_l) {
 			tmp->next = new node(tmp_l->value, tmp, nullptr);
 			tmp_l = tmp_l->next;
 			tmp = tmp->next;
 		}
+	}
+
+	void pop_head() {
+		--_size;
+		if (_size == 0) {
+			*this = linked_list();
+			return;
+		}
+		if (_size == 1) {
+			_head = new node(_head->next->value, nullptr, nullptr);
+			return;
+		}
+		_head = new node(_head->next->value, nullptr, _head->next->next);
+		_head->next->prev = _head;
+	}
+
+	void pop_tail() {
+		--_size;
+		if (_size == 0) {
+			*this = linked_list();
+			return;
+		}
+		auto tmp = _head;
+		while (tmp->next) {
+			tmp = tmp->next;
+		}
+		tmp->prev->next = nullptr;
+		delete tmp;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const linked_list& list) {
@@ -126,10 +155,19 @@ public:
 			delete tmp;
 		}
 	}
-	size_t get_size() {
+	size_t get_size() const{
 		return _size;
 	}
-	node* get_head() {
+
+	node* get_head() const{
 		return _head;
+	}
+
+	node* get_tail() const {
+		auto tmp = _head;
+		while (tmp->next) {
+			tmp = tmp->next;
+		}
+		return tmp;
 	}
 };
