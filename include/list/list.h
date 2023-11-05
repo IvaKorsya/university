@@ -69,6 +69,11 @@ public:
 	void add_to_head(const T& value) {
 		if (value <= 0 || value>10) throw std::invalid_argument("1 to 9");
 		++_size;
+		if (_head->value == 0) {
+			_head = new node(value, nullptr, nullptr);
+			_size = 1;
+			return;
+		}
 		auto tmp = _head;
 		_head = new node(value, nullptr, tmp);
 		tmp->prev = _head;
@@ -83,7 +88,11 @@ public:
 	void add_to_tail(const T& value) {
 		++_size;
 		if (value < 0 || value>10) throw std::invalid_argument("0 to 9");
-		if (!_head) _head = new node(value, nullptr, nullptr);
+		if (!_head || _head->value == 0) {
+			_head = new node(value, nullptr, nullptr);
+			_size = 1;
+			return;
+		}
 		auto tmp = _head;
 		while (tmp->next) {
 			tmp = tmp-> next;
