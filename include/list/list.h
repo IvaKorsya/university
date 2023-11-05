@@ -13,7 +13,7 @@ class linked_list {
 	node* _head;
 	size_t _size;
 public:
-	linked_list() : _head(new node(NULL,nullptr,nullptr)), _size(1) {};
+	linked_list() : _head(new node(NULL, nullptr, nullptr)), _size(1) {};
 
 	linked_list(size_t size) : _size(size) {
 		if (size <= 0) _size = 1;
@@ -29,8 +29,8 @@ public:
 			tmp = tmp->next;
 		}
 	}
-	
-	linked_list(const linked_list& list): _head(nullptr),_size(0){
+
+	linked_list(const linked_list& list) : _head(nullptr), _size(0) {
 		this->add_to_tail(list);
 	}
 
@@ -50,13 +50,13 @@ public:
 		if (index < 0 || index >= _size) throw std::invalid_argument("index out of the range");
 		size_t cur_ind = 0;
 		node* tmp = _head;
-		while (cur_ind++!=index) {
+		while (cur_ind++ != index) {
 			tmp = tmp->next;
 		}
 		return *tmp;
 	}
 
-	node& operator[](size_t index){
+	node& operator[](size_t index) {
 		if (index < 0 || index >= _size) throw std::invalid_argument("index out of the range");
 		size_t cur_ind = 0;
 		node* tmp = _head;
@@ -66,10 +66,9 @@ public:
 		return *tmp;
 	}
 
-	void add_to_head(const T& value) {
-		if (value <= 0 || value>10) throw std::invalid_argument("1 to 9");
+	void add_to_head_for_sum(const T& value) {
 		++_size;
-		if (_head->value == 0) {
+		if (_head->value == 0 && _size==2) {
 			_head = new node(value, nullptr, nullptr);
 			_size = 1;
 			return;
@@ -79,10 +78,23 @@ public:
 		tmp->prev = _head;
 	}
 
+	void add_to_head(const T& value) {
+		if (value <= 0 || value > 10) throw std::invalid_argument("1 to 9");
+		++_size;
+		auto tmp = _head;
+		if (tmp->value == 0) {
+			_head = new node(value, nullptr, nullptr);
+			_size = 1;
+			return;
+		}
+		_head = new node(value, nullptr, tmp);
+		tmp->prev = _head;
+	}
+
 	void add_to_head(const linked_list& list) {
-		auto new_head=list;
+		auto new_head = list;
 		new_head.add_to_tail(*this);
-		*this=new_head;
+		*this = new_head;
 	}
 
 	void add_to_tail(const T& value) {
@@ -95,21 +107,21 @@ public:
 		}
 		auto tmp = _head;
 		while (tmp->next) {
-			tmp = tmp-> next;
+			tmp = tmp->next;
 		}
 		tmp->next = new node(value, tmp, nullptr);
 	}
-	
+
 	void add_to_tail(const linked_list& list) {
 		_size += list._size;
 		auto tmp_l = list._head;
 		auto tmp = _head;
 		if (!_head) {
-			_head=new node(list._head->value,nullptr,nullptr);
+			_head = new node(list._head->value, nullptr, nullptr);
 			tmp = _head;
 			tmp_l = tmp_l->next;
 		}
-		else{
+		else {
 			tmp = this->get_tail();
 		}
 		while (tmp_l) {
@@ -169,13 +181,14 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const linked_list& list) {
 		os << "{ ";
 		auto tmp = list._head;
-		while(tmp){
+		while (tmp) {
 			os << tmp->value << " ";
 			tmp = tmp->next;
 		}
 		os << "}";
 		return os;
 	}
+
 	~linked_list() {
 		while (_head) {
 			auto tmp = _head;
@@ -183,11 +196,12 @@ public:
 			delete tmp;
 		}
 	}
-	size_t get_size() const{
+
+	size_t get_size() const {
 		return _size;
 	}
 
-	node* get_head() const{
+	node* get_head() const {
 		return _head;
 	}
 
@@ -199,3 +213,26 @@ public:
 		return tmp;
 	}
 };
+
+
+template<class T>
+linked_list<T> sum(const linked_list<T>& first, const linked_list<T>& second) {
+	linked_list<T> result=linked_list<T>();
+	T ten = 0;
+	auto tmp = first.get_tail();
+	auto tmp2 = second.get_tail();
+	while (tmp || tmp2 || ten!=0) {
+		T sum = ten;
+		if (tmp) {
+			sum += tmp->value;
+			tmp = tmp->prev;
+		}
+		if (tmp2) {
+			sum += tmp2->value;
+			tmp2 = tmp2->prev;
+		}
+		ten = sum / 10;
+		result.add_to_head_for_sum(sum % 10);
+	}
+	return result;
+}

@@ -101,4 +101,21 @@ TEST(list_tests, delete_node) {
 	ASSERT_EQ(list[1].value, 4);
 	ASSERT_EQ(list.get_size(), 2);
 }
+//13
+TEST(list_tests, sum_of_lists) {
+	linked_list<int> list = linked_list<int>();
+	linked_list<int> list2 = linked_list<int>();
+	list.add_to_head(6);//663
+	list.add_to_tail(6);
+	list.add_to_tail(3);
+	list2.add_to_tail(4);//491
+	list2.add_to_tail(9);
+	list2.add_to_tail(1);//answer 1154
+	auto sum_lists = sum(list2, list);
+	ASSERT_EQ(sum_lists[0].value, 1);
+	ASSERT_EQ(sum_lists[1].value, 1);
+	ASSERT_EQ(sum_lists[2].value, 5);
+	ASSERT_EQ(sum_lists[3].value, 4);
+	ASSERT_EQ(sum_lists.get_size(), 4);
+}
 
