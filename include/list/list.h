@@ -147,6 +147,25 @@ public:
 		delete tmp;
 	}
 
+	void delete_node(const T& value) {
+		if (value < 0 || value>9) throw std::invalid_argument("0 to 9");
+		auto tmp = _head;
+		while (tmp) {
+			if (_head->value == value) {
+				this->pop_head();
+			}
+			if (this->get_tail()->value == value) {
+				this->pop_tail();
+			}
+			else if (tmp->value == value) {
+				tmp->prev->next = tmp->next;
+				tmp->next->prev = tmp->prev;
+				--_size;
+			}
+			tmp = tmp->next;
+		}
+	}
+
 	friend std::ostream& operator<<(std::ostream& os, const linked_list& list) {
 		os << "{ ";
 		auto tmp = list._head;

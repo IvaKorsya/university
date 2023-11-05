@@ -86,4 +86,19 @@ TEST(list_tests, pop_tail) {
 	ASSERT_EQ(list[0].value, 2);
 	ASSERT_EQ(list.get_size(), 1);
 }
+//12
+TEST(list_tests, delete_node) {
+	linked_list<int> list = linked_list<int>();
+	list.add_to_head(5);
+	list.add_to_tail(5);
+	list.add_to_tail(3);
+	list.add_to_tail(5);
+	list.add_to_tail(4);
+	list.add_to_tail(5);
+	list.add_to_tail(5);
+	list.delete_node(5);
+	ASSERT_EQ(list[0].value, 3);
+	ASSERT_EQ(list[1].value, 4);
+	ASSERT_EQ(list.get_size(), 2);
+}
 
