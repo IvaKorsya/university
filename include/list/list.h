@@ -79,14 +79,15 @@ public:
 	}
 
 	void add_to_head(const T& value) {
-		if (value <= 0 || value > 10) throw std::invalid_argument("1 to 9");
+		if (value <1  || value  >9) throw std::invalid_argument("accepted 1 to 9");
 		++_size;
-		auto tmp = _head;
-		if (tmp->value == 0) {
+		
+		if (_head->value == 0) {
 			_head = new node(value, nullptr, nullptr);
 			_size = 1;
 			return;
 		}
+		auto tmp = _head;
 		_head = new node(value, nullptr, tmp);
 		tmp->prev = _head;
 	}
@@ -99,7 +100,7 @@ public:
 
 	void add_to_tail(const T& value) {
 		++_size;
-		if (value < 0 || value>10) throw std::invalid_argument("0 to 9");
+		if (value < 0 || value > 9) throw std::invalid_argument("0 to 9");
 		if (!_head || _head->value == 0) {
 			_head = new node(value, nullptr, nullptr);
 			_size = 1;
@@ -114,19 +115,19 @@ public:
 
 	void add_to_tail(const linked_list& list) {
 		_size += list._size;
-		auto tmp_l = list._head;
-		auto tmp = _head;
+		auto tmp2 = list._head;
+		node* tmp;
 		if (!_head) {
 			_head = new node(list._head->value, nullptr, nullptr);
 			tmp = _head;
-			tmp_l = tmp_l->next;
+			tmp2 = tmp2->next;
 		}
 		else {
 			tmp = this->get_tail();
 		}
-		while (tmp_l) {
-			tmp->next = new node(tmp_l->value, tmp, nullptr);
-			tmp_l = tmp_l->next;
+		while (tmp2) {
+			tmp->next = new node(tmp2->value, tmp, nullptr);
+			tmp2 = tmp2->next;
 			tmp = tmp->next;
 		}
 	}
@@ -235,4 +236,4 @@ linked_list<T> sum(const linked_list<T>& first, const linked_list<T>& second) {
 		result.add_to_head_for_sum(sum % 10);
 	}
 	return result;
-}
+} 

@@ -118,4 +118,16 @@ TEST(list_tests, sum_of_lists) {
 	ASSERT_EQ(sum_lists[3].value, 4);
 	ASSERT_EQ(sum_lists.get_size(), 4);
 }
-
+//13
+TEST(list_tests, sum_of_lists_with_null_list) {
+	linked_list<int> list = linked_list<int>();
+	linked_list<int> list2 = linked_list<int>();
+	list.add_to_head(6);//663
+	list.add_to_tail(6);
+	list.add_to_tail(3);
+	auto sum_lists = sum(list2, list);
+	ASSERT_EQ(sum_lists[0].value, 6);
+	ASSERT_EQ(sum_lists[1].value, 6);
+	ASSERT_EQ(sum_lists[2].value, 3);
+	ASSERT_EQ(sum_lists.get_size(), 3);
+}
