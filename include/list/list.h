@@ -133,17 +133,17 @@ public:
 	}
 
 	void pop_head() {
-		--_size;
-		if (_size == 0) {
-			*this = linked_list();
-			return;
-		}
 		if (_size == 1) {
-			_head = new node(_head->next->value, nullptr, nullptr);
+			_head->value = 0;
 			return;
-		}
-		_head = new node(_head->next->value, nullptr, _head->next->next);
-		_head->next->prev = _head;
+		}	
+		auto new_head = _head->next;
+		if (new_head != nullptr)
+			new_head->prev = nullptr;
+		delete _head;
+		_head = new_head;
+		--_size;
+		
 	}
 
 	void pop_tail() {
@@ -164,18 +164,16 @@ public:
 		if (value < 0 || value>9) throw std::invalid_argument("0 to 9");
 		auto tmp = _head;
 		while (tmp) {
-			if (_head->value == value) {
-				this->pop_head();
-			}
-			if (this->get_tail()->value == value) {
-				this->pop_tail();
-			}
-			else if (tmp->value == value) {
-				tmp->prev->next = tmp->next;
-				tmp->next->prev = tmp->prev;
+			if (tmp->value == value) {
+				auto ptr_tmp = tmp;
+				tmp = tmp->next;
+				if(!ptr_tmp->prev) _head = ptr_tmp->next;
+				else ptr_tmp->prev->next = ptr_tmp->next;
+				if (ptr_tmp->next) ptr_tmp->next->prev = ptr_tmp->prev;
+				delete ptr_tmp;
 				--_size;
 			}
-			tmp = tmp->next;
+			else tmp = tmp->next;
 		}
 	}
 

@@ -63,12 +63,11 @@ TEST(list_tests,add_to_head_list) {
 	ASSERT_EQ(list.get_size(), 7);
 }
 //9
-TEST(list_tests, pop_head) {
+TEST(list_tests, pop_head_1_el) {
 	linked_list<int> list = linked_list<int>();
 	list.add_to_head(2);
-	list.add_to_tail(5);
 	list.pop_head();
-	ASSERT_EQ(list[0].value, 5);
+	ASSERT_EQ(list[0].value, 0);
 	ASSERT_EQ(list.get_size(), 1);
 }
 //10
@@ -130,4 +129,28 @@ TEST(list_tests, sum_of_lists_with_null_list) {
 	ASSERT_EQ(sum_lists[1].value, 6);
 	ASSERT_EQ(sum_lists[2].value, 3);
 	ASSERT_EQ(sum_lists.get_size(), 3);
+}
+//14
+TEST(list_tests, pop_head_2_el) {
+	linked_list<int> list = linked_list<int>();
+	list.add_to_head(2);
+	list.add_to_head(2);
+	list.pop_head();
+	ASSERT_EQ(list[0].value, 2);
+	ASSERT_EQ(list.get_size(), 1);
+}
+//14
+TEST(list_tests, pop_head_5_el) {
+	linked_list<int> list = linked_list<int>();
+	list.add_to_head(2);
+	list.add_to_head(2);
+	list.add_to_head(2);
+	list.add_to_head(2);
+	list.add_to_head(2);
+	list.pop_head();
+	list.pop_head();
+	list.pop_head();
+	list.pop_head();
+	ASSERT_EQ(list[0].value, 2);
+	ASSERT_EQ(list.get_size(), 1);
 }
