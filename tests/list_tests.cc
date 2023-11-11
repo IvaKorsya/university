@@ -154,3 +154,4 @@ TEST(list_tests, pop_head_5_el) {
 	ASSERT_EQ(list[0].value, 2);
 	ASSERT_EQ(list.get_size(), 1);
 }
+

@@ -176,7 +176,7 @@ public:
 			else tmp = tmp->next;
 		}
 	}
-
+	
 	friend std::ostream& operator<<(std::ostream& os, const linked_list& list) {
 		os << "{ ";
 		auto tmp = list._head;
