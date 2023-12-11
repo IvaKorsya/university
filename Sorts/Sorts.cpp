@@ -2,6 +2,8 @@
 #include <vector>
 #include <random>
 
+size_t SIZE = 100000;
+
 struct Stats {
     size_t comparison_count = 0;
     size_t copy_count = 0;
@@ -65,13 +67,6 @@ Stats quick_sort(Iter begin, Iter end) {
     return stat;
 }
 
-size_t random_pivot_ind(int max_ind) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, max_ind);
-    return dist(gen);
-}
-
 template <class Iter>
 void do_heap(Iter begin, size_t size, size_t large, Stats& stat)
 {
@@ -79,15 +74,9 @@ void do_heap(Iter begin, size_t size, size_t large, Stats& stat)
     size_t l = 2 * large + 1;
     size_t r = 2 * large + 2; 
 
-    if (l < size && (*(begin + l) > *(begin + largest))) {
-        largest = l;
-        ++stat.comparison_count;
-    }
+    if (l < size && (*(begin + l) > *(begin + largest))) largest = l;
     ++stat.comparison_count;
-    if (r < size && (*(begin + r) > *(begin + largest))) {
-        ++stat.comparison_count;
-        largest = r;
-    }
+    if (r < size && (*(begin + r) > *(begin + largest))) largest = r;
     ++stat.comparison_count;
     if (largest !=large)
     {
@@ -115,15 +104,131 @@ Stats heap_sort(Iter begin,Iter end)
     return stat;
 }
 
+std::vector<int> random_vector(size_t size) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::vector<int> vect;
+    for (auto i = 0; i < size; ++i) {
+        vect.push_back(gen());
+    }
+    return vect;
+}
+
+std::vector<int> sorted_vector(size_t size) {
+    std::vector<int> vect;
+    for (auto i = 0; i < size; ++i) {
+        vect.push_back(i);
+    }
+    return vect;
+}
+
+std::vector<int> inverted_vector(size_t size) {
+    std::vector<int> vect;
+    for (auto i = size-1; i > 0; --i) {
+        vect.push_back(i);
+    }
+    return vect;
+}
+
 int main()
 {
-    std::vector<int> vect = { 99, 5, 3 , 0 ,8 ,6 , 7 , 2 ,8 ,8,2 ,6 ,72,-1,-1,-2};
-    
-    //std::vector<int> vect = { 99, 5,3,0,8};
-    //Stats stat=heap_sort(vect.begin(), vect.end());
-    //do_heap(vect.begin(), vect.end());
-    heap_sort(vect.begin(), vect.end());
-    for (size_t i = 0; i < vect.size(); ++i) {
-        std::cout << vect[i]<<" ";
-    }   
+    //Bubble sort, random vector
+    std::cout << "bubble sort, random, size="<<SIZE << std::endl;
+    size_t sum_c1 = 0, count1 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = random_vector(SIZE);
+        auto stat = bubble_sort(vect.begin(), vect.end());
+        sum_c1 += stat.comparison_count;
+        count1 += stat.copy_count;
+    }
+    std::cout << sum_c1 / 100 << " " << count1 / 100 << std::endl;
+
+
+    //Bubble sort, sorted vector
+    std::cout << "bubble sort, sorted, size=" << SIZE << std::endl;
+    size_t sum_c2 = 0, count2 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = sorted_vector(SIZE);
+        auto stat = bubble_sort(vect.begin(), vect.end());
+        sum_c2 += stat.comparison_count;
+        count2 += stat.copy_count;
+    }
+    std::cout << sum_c2 / 100 << " " << count2 / 100 << std::endl;
+
+    //Bubble sort, inv vector
+    std::cout << "bubble sort, inv, size=" << SIZE << std::endl;
+    size_t sum_c3 = 0, count3 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = inverted_vector(SIZE);
+        auto stat = bubble_sort(vect.begin(), vect.end());
+        sum_c3 += stat.comparison_count;
+        count3+= stat.copy_count;
+    }
+    std::cout << sum_c3 / 100 << " " << count3 / 100 << std::endl;
+
+    //Quick sort, random vector
+    std::cout << "quick sort, random, size=" << SIZE << std::endl;
+    size_t sum_c4 = 0, count4 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = random_vector(SIZE);
+        auto stat = quick_sort(vect.begin(), vect.end());
+        sum_c4 += stat.comparison_count;
+        count4 += stat.copy_count;
+    }
+    std::cout << sum_c4 / 100 << " " << count4 / 100 << std::endl;
+
+    //Quick sort, sorted vector
+    std::cout << "quick sort, sorted, size=" << SIZE << std::endl;
+    size_t sum_c5 = 0, count5 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = sorted_vector(SIZE);
+        auto stat = quick_sort(vect.begin(), vect.end());
+        sum_c5 += stat.comparison_count;
+        count5 += stat.copy_count;
+    }
+    std::cout << sum_c5 / 100 << " " << count5 / 100 << std::endl;
+
+    //Quick sort, inv vector
+    std::cout << "quick sort, inv, size=" << SIZE << std::endl;
+    size_t sum_c6 = 0, count6= 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = inverted_vector(SIZE);
+        auto stat = quick_sort(vect.begin(), vect.end());
+        sum_c6 += stat.comparison_count;
+        count6 += stat.copy_count;
+    }
+    std::cout << sum_c6 / 100 << " " << count6 / 100 << std::endl;
+
+    //Heap sort, random vector
+    std::cout << "heap sort, random, size=" << SIZE << std::endl;
+    size_t sum_c7 = 0, count7 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = random_vector(SIZE);
+        auto stat = heap_sort(vect.begin(), vect.end());
+        sum_c7 += stat.comparison_count;
+        count7 += stat.copy_count;
+    }
+    std::cout << sum_c7 / 100 << " " << count7 / 100 << std::endl;
+
+    //Heap sort, sorted vector
+    std::cout << "heap sort, sorted, size=" << SIZE << std::endl;
+    size_t sum_c8 = 0, count8 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = sorted_vector(SIZE);
+        auto stat = heap_sort(vect.begin(), vect.end());
+        sum_c8 += stat.comparison_count;
+        count8 += stat.copy_count;
+    }
+    std::cout << sum_c8 / 100 << " " << count8 / 100 << std::endl;
+
+    //Heap sort, inv vector
+    std::cout << "heap sort, inv, size=" << SIZE << std::endl;
+    size_t sum_c9 = 0, count9 = 0;
+    for (auto i = 0; i < 100; ++i) {
+        std::vector<int> vect = inverted_vector(SIZE);
+        auto stat = heap_sort(vect.begin(), vect.end());
+        sum_c9 += stat.comparison_count;
+        count9 += stat.copy_count;
+    }
+    std::cout << sum_c9 / 100 << " " << count9 / 100 << std::endl;
 }
